@@ -18,8 +18,6 @@ def lightUp (ledNumber, period):
     time.sleep (period)
     GPIO.output (array_cvetodiodov[ledNumber],0)
 
-
-
 def blink (ledNumber, blinkCount, blinkPeriod):
     count = 0
     while count < blinkCount:
@@ -40,7 +38,6 @@ def runningLight (count, period):
              GPIO.output (array_cvetodiodov[my_count], 0)
              my_count += 1
         my_count_round += 1
-
 
 def runningDark (count, period):
     GPIO.output (array_cvetodiodov, 1)
@@ -68,37 +65,46 @@ def decToBinList (decNumber):
         rezult.insert (0, 0)
 
     return rezult
-
+---------------------------------------------------------------------
 def runningPattern (pattern, direction):
-    GPIO.output (array_cvetodiodov, 0)
+    GPIO.output(array_cvetodiodov, 0)
     arr = decToBinList (pattern)
-    array = [0] * 8
-
-    for t in range (0, 9):
-        for i in range (0, 8):
-            array [i] = arr [(i + t*direction) % 8]
-        for j in range (0, 8):
-            if array [7 - j] == 1:
-                GPIO.output (array_cvetodiodov, 1)
-        time.sleep (1)
+    array = [0]* 8
+    for t in range(0, 9):
+        for i in range(0, 8):
+            array[i] = arr[(i + t*direction)  % 8]
+        for j in range(0,8):
+            if (array[7 - j] == 1):
+                GPIO.output(array_cvetodiodov [j], 1)
+        time.sleep(1)
         GPIO.output (array_cvetodiodov, 0)
+        
+def lightNumber(number):
+    GPIO.output (chan_list, 0)
+    registers = decToBinList(number)
+    for j in range(8):
+        if (registers[7 - j] == 1):
+            GPIO.output (chan_list[j], 1)
+            GPIO.cleanup(chan_list)
+            
+def SHIM (ledNumber, frequency):
+    p = GPIO.PWM (bits [ledNumber], frequency)
+    p.start(0)
+    
+    while True:
+        for dc in range (0, 101, 5):
+            p.ChangeDutyCycle (dc)
+            time.sleep (0.1)
+        for dc in range (100, -1, -5):
+            p.ChangeDutyCycle (dc)
+            time.sleep (0.1)
+    p.stop ()
+    GPIO.cleanup ()    
+        
 
+#lightNumber (133)
+#runningPattern(6,1)
 
-
-
-
-
-
-
-
-   
-
-#lightUp (2,1)
-#blink (0, 2, 1)
-#runningLight (2, 1)
-#runningDark (2, 1)
-print (decToBinList (133))
-#runningPattern (3, 2)
 GPIO.cleanup (array_cvetodiodov)
 
 
